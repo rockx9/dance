@@ -11,11 +11,12 @@ import (
 
 func start() {
 	r := gin.New()
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.Use(middleware.CORSMiddleware())
+	r.Use(middleware.JWTAuthMiddleware())
 	v1 := r.Group("/api/v1")
 	api.Route(v1)
-	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.Run("0.0.0.0:8080")
 }
 

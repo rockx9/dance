@@ -7,6 +7,7 @@ import "github.com/gin-gonic/gin"
 // @Accept	json
 // @Produce	json
 // @Tags	instructors
+// @Param 	Authorization	header	string	true	"JWT token"
 // @Success 200 {object} []models.Instructor "successful"
 // @Router /instructors [GET]
 func GetInstructorListHandle(ctx *gin.Context) {
@@ -18,6 +19,7 @@ func GetInstructorListHandle(ctx *gin.Context) {
 // @Accept	json
 // @Produce	json
 // @Tags	instructors
+// @Param 	Authorization	header	string	true	"JWT token"
 // @Param   id		path    int     true        "instructor ID"
 // @Success 200 {object} models.Instructor "successful"
 // @Router /instructors/{id} [GET]
@@ -30,6 +32,7 @@ func GetInstructorHandle(ctx *gin.Context) {
 // @Accept	json
 // @Produce	json
 // @Tags	instructors
+// @Param 	Authorization	header	string	true	"JWT token"
 // @Param   id		path    int     true        "instructor ID"
 // @Param   form	body	types.UpdateInstructorRequest	true	"form""
 // @Success 200 {object} models.Instructor "successful"
@@ -43,6 +46,7 @@ func UpdateInstructorHandle(ctx *gin.Context) {
 // @Accept	json
 // @Produce	json
 // @Tags	instructors
+// @Param 	Authorization	header	string	true	"JWT token"
 // @Param   form	body	types.CreateInstructorRequest	true	"form""
 // @Success 200 {object} models.Instructor "successful"
 // @Router /instructors [POST]
@@ -55,6 +59,7 @@ func CreateInstructorHandle(ctx *gin.Context) {
 // @Accept	json
 // @Produce	json
 // @Tags	instructors
+// @Param 	Authorization	header	string	true	"JWT token"
 // @Param   id		path    int     true        "instructor ID"
 // @Success 200 {object} nil "successful"
 // @Router /instructors/{id} [DELETE]
