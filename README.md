@@ -73,3 +73,133 @@ PUT    /api/v1/instructors/:id          # Update Instructor Information
 DELETE /api/v1/instructors/:id          # Delete an Instructor
             Removes an instructor based on the given ID. This action is irreversible.
 ```
+
+### View or handle
+There are two primary functions: one is the Swagger documentation, and the other is the API processing function.
+```go
+// @Summary	login
+// @Description	login
+// @Accept	json
+// @Produce	json
+// @Tags	auth
+// @Param   form	body	types.LoginRequest	true	"form""
+// @Success 200 {object} models.Instructor "successful"
+// @Router /auth/login [POST]
+func LoginHandle(ctx *gin.Context) {
+	NewAuthViewset(ctx).Login()
+}
+```
+
+### Viewset
+A ViewSet is a collection of APIs that enable adding, deleting, updating, and retrieving resources, such as user data.
+```go
+type IUser interface {
+	GetInstance()
+	ListInstances()
+	CreateInstance()
+	UpdateInstance()
+	DeleteInstance()
+}
+
+
+type UserViewset struct {
+    s service.IInstructor
+}
+
+
+func (v InstructorViewset) ListInstances() {
+    data, err := v.s.ListAllInstances()
+    if err != nil {
+        v.ResponseError(err)
+        return
+    }
+    v.ResponseOK(data)
+}
+
+func (v InstructorViewset) getPathIdParameter() (int, error) {
+    id := v.Param("id")
+    instanceId, err := strconv.Atoi(id)
+    if err != nil {
+        return instanceId, errors.New("Instructor ID Error")
+    }
+    return instanceId, nil
+}
+
+func (v InstructorViewset) GetInstance() {
+    id, err := v.getPathIdParameter()
+    if err != nil {
+        v.ResponseError(err)
+        return
+    }
+    obj, err := v.s.GetInstance(id)
+    if err != nil {
+        v.ResponseError(err)
+        return
+    }
+    v.ResponseOK(obj)
+}
+
+func (v InstructorViewset) CreateInstance() {
+    var form types.CreateInstructorRequest
+    if err := v.Bind(&form); err != nil {
+        v.ResponseError(err)
+        return
+    }
+    if err := v.s.CreateInstance(form.Instructor); err != nil {
+        v.ResponseError(err)
+        return
+    }
+    v.ResponseOK(nil)
+}
+
+func (v InstructorViewset) UpdateInstance() {
+    var (
+        id   int
+        form types.UpdateInstructorRequest
+        err  error
+    )
+    if id, err = v.getPathIdParameter(); err != nil {
+        v.ResponseError(err)
+        return
+    }
+    
+    if err = v.Bind(&form); err != nil {
+        v.ResponseError(err)
+        return
+    }
+    
+    if err = v.s.UpdateInstance(id, form); err != nil {
+        v.ResponseError(err)
+        return
+    }
+    v.ResponseOK(nil)
+}
+
+func (v InstructorViewset) DeleteInstance() {
+    id, err := v.getPathIdParameter()
+    if err != nil {
+        v.ResponseError(err)
+        return
+    }
+    if err = v.s.DeleteInstance(id); err != nil {
+        v.ResponseError(err)
+        return
+    }
+    v.ResponseOK(nil)
+}
+
+```
+
+### Service
+
+The Service layer implements business logic functions, including database operations such as inserting, deleting, updating, and querying data.
+
+```go
+type IUser Interface {
+	ListUsers() ([]*models.User, error)
+	GetUserById(id int) (*models.User, error)
+	DeleteUserById(id int) error
+	CreateUser(form types.CreateUserRequest) (*models.User, error)
+	UpdateUser(id int, form types.UpdateUserRequest) (*models.User, error)
+}
+```
