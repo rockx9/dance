@@ -7,6 +7,7 @@ A example of a web APP that use Gin framework.
 install swag
 ```bash
 go install github.com/swaggo/swag/cmd/swag@latest
+go mod download
 ```
 
 
