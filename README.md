@@ -10,6 +10,10 @@ go install github.com/swaggo/swag/cmd/swag@latest
 go mod download
 ```
 
+download dependency
+```bash
+go mod download
+```
 
 start service
 ```bash
